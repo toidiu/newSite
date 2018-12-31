@@ -1,0 +1,157 @@
+
+
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+
+        <title>toidiu</title>
+        <meta name="description"
+          content="Apoorv Kothari is software engineer. He studied Engineering at Cooper Union and is intrested in Rust, Kubernetes, Scala, Android, Java.">
+        <meta name="keywords"
+          content="toidiu, Apoorv Kothari, Android, Scala, java, Cooper Union, blog, talks, code, rust, kubernetes">
+
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <!-- Enable responsiveness on mobile devices-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, target-densitydpi=device-dpi">
+
+        <meta name="ROBOTS" content="INDEX, FOLLOW">
+
+        
+  <link rel="stylesheet" type="text/css" href="reads.css">
+
+        <link rel="stylesheet" type="text/css" href="/main.css">
+    </head>
+
+    
+      <body id=reads >
+    
+        
+          
+            
+<nav id="site-nav">
+
+  
+  <a class="nav-link
+      "
+      href="http://toidiu.com">
+
+      home
+    </a>
+  
+  <a class="nav-link
+      "
+      href="http://toidiu.com&#x2F;projects">
+
+      projects
+    </a>
+  
+  <a class="nav-link
+      active"
+      href="http://toidiu.com&#x2F;reads">
+
+      reads
+    </a>
+  
+  <a class="nav-link
+      "
+      href="http://toidiu.com&#x2F;blog">
+
+      blog
+    </a>
+  
+
+</nav>
+
+          
+        
+
+        
+<div class="main-container">
+
+  
+    <div class="article">
+      <a class="title" href="#consistent-hashing-and-random-trees-distributed-caching-protocols-for-relieving-hot-spots-on-the-world-wide-web">Consistent Hashing and Random Trees: Distributed Caching Protocols for Relieving Hot Spots on the World Wide Web</a>
+
+      <a class="paper-links" href="/reads/consistent_hashing_and_random_trees_distributed_caching_protocols_for_relieving_hot_spots_on_the_world_wide_web_technical_publication.pdf">[paper]</a>
+
+      
+        <a class="paper-links" href="https:&#x2F;&#x2F;github.com&#x2F;toidiu&#x2F;consistent-rs" target=_blank" rel="noopener">[code]</a>
+      
+
+      <div class="short summary">
+        <p>In distributed systems there exists a problem of how to spread load across many servers in a scalable manner. Consistent hashing is a hashing design that allows for distribution with minimal coordination between the machines.</p>
+      </div>
+
+      <div class="summary hide-more">
+        <a class="more" href="#">expand</a>
+        <div class="more-container">
+          <p>A first solution might be to hash the requests across the different servers. In terms of a caching, this means to take item (<code>i</code>), hash it (good distribution) and then assign it to the available caches (<code>C</code>), maybe with modulo: <code>hash\_fn(i) % C</code>. There are two problems with this approach. First is that the distribution is a function of the servers, so as we add or remove servers, we now need to recalculate the modulo and therefore the distribution. The second problem, which derives from the first, is that now each server node now needs to be updated - said differently, each server node now needs to be aware of every node. Consensus is hard, so this is not ideal.</p>
+<p>Section 4 contained proof and discussion of Consistent Hashing.</p>
+<p>The authors define 4 properties that define their notion of consistency: <strong>balance</strong> requires that the hash function distribute the objects in a balanced fashion amongst the buckets. <strong>monotonicity</strong> says if items are initially assigned to a set of buckets and then some new buckets are added, then an item may move from an old bucket to a new bucket, but not from one old bucket to another. <strong>spread</strong> implies that references for a given object are only directed to a small number of caching machines. <strong>load</strong> implies that no one cache is assigned an unreasonable number of objects.objects.</p>
+<p>Next they define some properties of a good ranged hash function: Given <code>Rb</code>(hash for buckets) and <code>Ri</code>(hash for items). An item <code>i</code> should be assigned to the closest bucket. Given max of <code>C</code> buckets. For each bucket create <code>k*log(C)</code>, some constant <code>k</code> virtual buckets and map them using the hash function <code>Rb</code>. To save space, have <code>Rb</code> and <code>Ri</code> map to the range <code>[0,1]</code>. To differentiate a point from another, we only needs to have <code>log(number of points)</code> random bits (decimal precision) identifying a point.</p>
+<p>Lastly they share an efficient implementation of a possible consistent hash function: Use a balanced binary search tree to store the buckets and their assignment in the range. If there are <code>C</code> buckets, then there will be <code>k*C*log(C)</code> entries, which gives a worse tree depth of <code>log(C)</code> and a worse possible calculation of <code>log(C)</code>. The time for adding and removing a bucket is <code>log^2(C)</code> since we would need to remove <code>k*log(C)</code> points. To reduce this time to constant lookup, the authors suggest dividing the range into <code>k*C*log(C)</code> equal length segments and have a separate tree for each one. This allows us to more predictably have one bucket per segment. The problem with segments is that it requires smaller segments as more buckets are added. An amortized way recommended by the authors is to choose intervals of size <code>1/2^x</code> such that <code>1/2^x &lt; 1/k*C*log(C)</code>. Then as new buckets are added, gradually bisect each section.</p>
+
+        </div>
+        <!-- <a class="less" href="#">less</a> -->
+      </div>
+    </div>
+  
+    <div class="article">
+      <a class="title" href="#impossibility-of-distributed-consensus-with-one-faulty-process">Impossibility of Distributed Consensus with One Faulty Process</a>
+
+      <a class="paper-links" href="/reads/FLP_imposibility.pdf">[paper]</a>
+
+      
+
+      <div class="short summary">
+        <p>The consensus problem involves a system of asynchronous processes, some of which may be unreliable&#x2F;faulty (die or crash). This paper proves that every solution, with even a single faulty process, has the possibility of non-termination. The important takeaway: we can design our systems to make the possibility of a livelock small, but the probability is non-zero.</p>
+      </div>
+
+      <div class="summary hide-more">
+        <a class="more" href="#">expand</a>
+        <div class="more-container">
+          <p>Despite being a short paper, the proofs themselves were pretty confusing. This <a href="https://www.the-paper-trail.org/post/2008-08-13-a-brief-tour-of-flp-impossibility/" target="_blank" rel="noopener">post</a> was critical for my understanding.</p>
+<p>The proof is comprised of two lemmas. The first lemma showed that there must be some initial configuration where consensus is not yet determined (caused by errors or message delays). Think of this as <strong>bivalent</strong> (having two possible truths) state. The second lemma shows that it is always possible to remain in a <strong>bivalent</strong> state by delaying a message.</p>
+<p>Lets note the assumptions made by the proof: The underlying transport protocol is reliable; messages are delivered correctly and exactly once. There is no synchronized clock, and it is not possible to detect a slow process vs a dead process. Additionally, the proof relaxes the <strong>termination</strong> requirement and requires that only some process eventually decide on a value (weak consensus). Put another way, a message will always be delivered but can be delayed and can be delivered out-of-order.</p>
+<p>For Strong Consensus these 3 properties must hold: <strong>termination</strong>: eventually, every correct process decides some value. <strong>agreement</strong>: all processes that decide do so on the same value. <strong>validity</strong>: the value must have been proposed by some process.</p>
+
+        </div>
+        <!-- <a class="less" href="#">less</a> -->
+      </div>
+    </div>
+  
+
+</div>
+
+
+        
+          <footer>
+  <a class="link-icon" href="http://www.speakerdeck.com/toidiu">
+      <img src="/images/speakerdeck.png"/>
+      <span class="icon-description">talks</span >
+  </a>
+  <a class="link-icon" href="http://www.github.com/toidiu">
+      <img src="/images/github.png"/>
+      <span class="icon-description">github</span >
+  </a>
+  <a class="link-icon" href="mailto:toidiu@protonmail.com">
+      <img src="/images/email.png"/>
+      <span class="icon-description">e-mail</span >
+  </a>
+  <a class="link-icon" href="assets/resume.pdf">
+      <img src="/images/resume.png"/>
+      <span class="icon-description">resume</span >
+  </a>
+</footer>
+
+        
+
+        
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
+          <script type="text/javascript" src="http:&#x2F;&#x2F;toidiu.com&#x2F;main.js" ></script>
+        
+    </body>
+
+</html>
+

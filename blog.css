@@ -1,0 +1,1 @@
+#blog a.title{font-size:20px;color:#d8bc5a;display:block}#blog a.title::before{content:"# "}#blog .main-container{line-height:1.75em}#blog .post{margin-bottom:20px}@media screen and (min-width: 600px){#blog #projects #item-container{text-align:left}}
